@@ -1,0 +1,33 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Function to collect hierarchy of any object
+local function collectHierarchy(parent, path)
+	local currentPath = path and (path .. " > " .. parent.Name) or parent.Name
+	local itemList = {}
+
+	for _, child in ipairs(parent:GetChildren()) do
+		table.insert(itemList, currentPath .. " > " .. child.Name)
+		local childItemList = collectHierarchy(child, currentPath)
+		for _, subChild in ipairs(childItemList) do
+			table.insert(itemList, subChild)
+		end
+	end
+
+	return itemList
+end
+
+-- Function to display collected hierarchy in the output with delays
+local function displayHierarchy(itemList)
+	for _, item in ipairs(itemList) do
+		warn(item)
+		wait(0.5)  -- Delay to prevent overwhelming the output
+	end
+end
+
+-- Collect and display all elements under ReplicatedStorage
+local function checkAndDisplay()
+	local replicatedStorageInfo = collectHierarchy(replicatedStorage, "ReplicatedStorage")
+	displayHierarchy(replicatedStorageInfo)
+end
+
+checkAndDisplay()
