@@ -1,0 +1,34 @@
+local player = game.Players.LocalPlayer
+
+-- Function to collect hierarchy of any object
+local function collectHierarchy(parent, path)
+	local currentPath = path and (path .. " > " .. parent.Name) or parent.Name
+	local itemList = {}
+
+	for _, child in ipairs(parent:GetChildren()) do
+		table.insert(itemList, currentPath .. " > " .. child.Name)
+		local childItemList = collectHierarchy(child, currentPath)
+		for _, subChild in ipairs(childItemList) do
+			table.insert(itemList, subChild)
+		end
+	end
+
+	return itemList
+end
+
+-- Function to display collected hierarchy in the output
+local function displayHierarchy(itemList)
+	for _, item in ipairs(itemList) do
+		warn(item)
+	end
+end
+
+-- Collect and display all elements under LocalPlayer
+local function checkAndDisplay()
+	local playerInfo = collectHierarchy(player, "Player")
+	displayHierarchy(playerInfo)
+end
+
+wait(5)
+
+checkAndDisplay()
