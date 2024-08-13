@@ -1,0 +1,44 @@
+local player = game.Players.LocalPlayer
+
+-- Function to collect hierarchy of any object, excluding specific names
+local function collectHierarchy(parent, path, excludeNames)
+	local currentPath = path and (path .. " > " .. parent.Name) or parent.Name
+	local itemList = {}
+
+	-- Skip if the parent is in the exclude list
+	if excludeNames and table.find(excludeNames, parent.Name) then
+		return itemList
+	end
+
+	for _, child in ipairs(parent:GetChildren()) do
+		-- Skip if the child is in the exclude list
+		if not (excludeNames and table.find(excludeNames, child.Name)) then
+			table.insert(itemList, currentPath .. " > " .. child.Name)
+			local childItemList = collectHierarchy(child, currentPath, excludeNames)
+			for _, subChild in ipairs(childItemList) do
+				table.insert(itemList, subChild)
+			end
+		end
+	end
+
+	return itemList
+end
+
+-- Function to display collected hierarchy in the output with delays
+local function displayHierarchy(itemList)
+	for _, item in ipairs(itemList) do
+		warn(item)
+		wait(0.5)  -- Delay to prevent overwhelming the output
+	end
+end
+
+-- Collect and display all elements under LocalPlayer, excluding PlayerGui and PlayerScripts
+local function checkAndDisplay()
+	local excludeNames = {"PlayerGui", "PlayerScripts"}  -- Names to exclude
+	local playerInfo = collectHierarchy(player, "Player", excludeNames)
+	displayHierarchy(playerInfo)
+end
+
+wait(5)
+
+checkAndDisplay()
