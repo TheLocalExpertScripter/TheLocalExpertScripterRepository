@@ -16,10 +16,11 @@ local function collectHierarchy(parent, path)
 	return itemList
 end
 
--- Function to display collected hierarchy in the output
+-- Function to display collected hierarchy in the output with delays
 local function displayHierarchy(itemList)
 	for _, item in ipairs(itemList) do
 		warn(item)
+		wait(0.5)  -- Delay to prevent overwhelming the output
 	end
 end
 
